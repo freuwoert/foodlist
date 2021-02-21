@@ -1,6 +1,6 @@
 <template>
     <div class="ccc-ui-container" :class="[{'focused': isFocused}, {'focused-or-filled': isFocusedOrFilled}, {'invalid': isInvalid}, {'has-label': label}, {'spacer': displayMax}]">
-        <input class="input" :autocomplete="ac" :name="name" v-model="value_" type="text" @input="emit()" @focus="isFocused = true; $emit('focus')" @blur="isFocused = false; $emit('blur')" spellcheck="false">
+        <input class="input" :autocomplete="ac" :name="name" v-model="value_" type="text" @keydown="keypress($event)" @input="emit()" @focus="isFocused = true; $emit('focus')" @blur="isFocused = false; $emit('blur')" spellcheck="false">
         
         <div class="border" v-if="hasBorder"></div>
 
@@ -59,6 +59,14 @@
             emit() {
                 this.$emit('update:modelValue', this.value_)
                 this.validate()
+            },
+
+            keypress(e)
+            {
+                if(e.keyCode == 13)
+                {
+                    this.$emit('enter', e.target.value)
+                }
             },
 
             validate() {

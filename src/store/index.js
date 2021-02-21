@@ -3,7 +3,7 @@ import { createStore } from 'vuex'
 export default createStore({
     state: {
         dishes: [
-            {name: 'Lasagne', ingredients: []},
+            {name: 'Lasagne', ingredients: [{name: 'niggastangen'}]},
             {name: 'Chili con Carne', ingredients: []},
             {name: 'Pizza', ingredients: []},
             {name: 'Apfel', ingredients: []},
@@ -17,29 +17,24 @@ export default createStore({
         }
     },
     actions: {
-        addDish(store, payload) {
-            store.commit('addDish', payload)
+        setDish(store, payload) {
+            store.commit('setDish', payload)
         },
 
         removeDish(store, payload) {
             store.commit('removeDish', payload)
         },
-
-        setDish(store, payload) {
-            store.commit('setDish', payload)
-        },
     },
     mutations: {
-        addDish(state, data) {
-            state.dishes.push(data)
+        setDish(state, data) {
+            let i = state.dishes.findIndex(e => e.name === data.name)
+
+            if (i < 0) state.dishes.push(data)
+            else       state.dishes[i] = data
         },
 
         removeDish(state, data) {
             state.dishes.splice(state.dishes.findIndex(e => e.name === data), 1)
-        },
-
-        setDish(state, data) {
-            state.dishes[state.dishes.findIndex(e => e.name === data.name)] = data
         },
     },
     modules: {

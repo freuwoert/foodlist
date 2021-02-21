@@ -1,9 +1,13 @@
 <template>
     <div id="nav">
-        <router-link to="/">Home</router-link>
-        <router-link to="/dishes">Dishes</router-link>
+        <router-link class="home-link" to="/">&#988191;</router-link>
+        <router-link class="dishes-link" to="/dishes">&#984211;</router-link>
     </div>
-    <router-view/>
+    <router-view class="router-view" v-slot="{ Component }">
+        <transition :name="($route.path == '/') ? 'slide-left' : 'slide-right'">
+            <component :is="Component" />
+        </transition>
+    </router-view>
 </template>
 
 <style lang="sass">
@@ -72,27 +76,54 @@
         color: #2c3e50
         width: 100%
         height: 100%
-        display: grid
-        grid-template: 60px auto / 1fr
-        grid-template-areas: "nav" "main"
+        position: relative
 
     #nav
-        grid-area: nav
+        position: fixed
+        top: 0
+        left: 0
+        z-index: 1000
         width: 100%
-        padding: 10px 0
+        height: 50px
+        padding: 0 5px
+        background: var(--bg)
         font-size: var(--text-size)
+        text-align: left
 
         a
             color: var(--text-gray)
             text-decoration: none
-            padding: 10px 20px
-            text-transform: uppercase
+            font-family: 'Material Icons'
+            font-size: 25px
+            height: 50px
+            width: 50px
+            display: inline-grid
+            place-content: center
+
+            &.dishes-link
+                float: right
 
             &.router-link-exact-active
                 color: var(--primary)
 
     .view-container
-        grid-area: main
+        position: fixed
+        bottom: 0
+        left: 0
         width: 100%
+        z-index: 3000
+        height: calc(100% - 50px)
+        text-align: left
         font-size: var(--text-size)
+
+    .router-view
+        transition: all 200ms
+
+        &.slide-right-enter-from,
+        &.slide-left-leave-to
+            transform: translateX(100%)
+
+        &.slide-left-enter-from,
+        &.slide-right-leave-to
+            transform: translateX(-100%)
 </style>

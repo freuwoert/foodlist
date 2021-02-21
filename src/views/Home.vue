@@ -1,15 +1,20 @@
 <template>
     <div class="view-container">
-        <div class="card-wrapper">
+        <div class="card-wrapper" v-if="randomDish">
             <div class="card-container">
-                <img src="https://www.kuechengoetter.de/uploads/media/1800x1200/02/4282-pizza-margherita.jpg?v=1-0">
+                <img src="../assets/placeholder.svg">
                 <h1>{{randomDish.name}}</h1>
+                <p v-if="randomDish.ingredients.length > 0">{{randomDish.ingredients.map(e => e.name).join(', ')}}</p>
             </div>
         </div>
 
-        <div class="button-wrapper">
-            <ui-button icon="&#984221;" @v-click="chooseRandomDish()">Mischen</ui-button>
+        <div class="placeholder" v-else>
+            Füge dein erstes Gericht hinzu.<br><br>
+            <ui-button @v-click="$router.push('dishes')">Jetzt Hinzufügen</ui-button>
+        </div>
 
+        <div class="button-wrapper" v-if="randomDish">
+            <ui-button icon="none" @v-click="chooseRandomDish()">Zufälliges Gericht</ui-button>
         </div>
     </div>
 </template>
@@ -22,8 +27,7 @@
 
         data() {
             return {
-                randomDish: '',
-                
+                randomDish: null,
             }
         },
 
@@ -33,9 +37,24 @@
 
         methods: {
             chooseRandomDish() {
-                let randomDishIndex = Math.floor(Math.random() * (this.dishes.length))
+                if (this.dishes.length == 0)
+                {
+                    return
+                }
 
-                this.randomDish = this.dishes[randomDishIndex]
+                if (this.randomDish === null)
+                {
+                    this.randomDish = this.dishes[0]
+                }
+
+                let oldDish = this.randomDish.name
+
+                while (this.dishes.length > 1 && this.randomDish.name == oldDish) 
+                {
+                    let randomDishIndex = Math.floor(Math.random() * (this.dishes.length))
+    
+                    this.randomDish = this.dishes[randomDishIndex]
+                }
             }
         },
 
@@ -53,10 +72,19 @@
 
 <style lang="sass" scoped>
     .view-container
-        height: 100%
         display: grid
         grid-template: auto 60px / 1fr
         grid-template-areas: "wrapper" "button"
+
+        .placeholder
+            height: 100%
+            width: 100%
+            display: grid
+            place-content: center
+            color: var(--text-gray)
+            position: absolute
+            top: 0
+            left: 0
 
         .card-wrapper
             grid-area: wrapper
@@ -79,7 +107,19 @@
                 h1
                     font-size: 25px
                     line-height: 40px
+                    width: 100%
+                    text-align: center
+                    padding: 0 15px
+
+                p
+                    font-size: var(--text-size)
+                    color: var(--text-gray)
+                    width: 100%
+                    text-align: center
+                    padding: 0 15px
+                    margin-top: 0
 
         .button-wrapper
             grid-area: button
+            text-align: center
 </style>
